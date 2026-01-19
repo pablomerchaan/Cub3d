@@ -51,7 +51,7 @@ static void	finalize_parse(t_game *game)
 	if (!all_params_set(&game->config))
 		error_exit("Missing parameters");
 	make_map_rectangular(&game->map);
-	parse_player(&game->map, &game->player);
+	parse_player(&game->map, &game->player, game);
 	validate_map(&game->map);
 }
 

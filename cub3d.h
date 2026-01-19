@@ -6,6 +6,9 @@
 # include <unistd.h>
 # include <math.h>
 # include <fcntl.h>
+#include "libft/libft.h"
+#include "mlx/include/MLX42/MLX42.h"
+#include "getnextline/get_next_line.h"
 
 typedef struct s_player {
     double x;
@@ -54,7 +57,7 @@ typedef struct s_game
 
 void	parse_cub(char *file, t_game *game);
 void	error_exit(char *msg);
-void	free_game(void);
+void	free_game(t_game *game);
 void	init_game(t_game *game);
 
 #endif

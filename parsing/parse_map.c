@@ -25,7 +25,7 @@ static void	set_player(t_game *game, int x, int y, char dir)
 	init_player_direction(&game->player, dir);
 }
 
-void	parse_player(t_map *map, t_player *player)
+void	parse_player(t_map *map, t_player *player, t_game *game)
 {
 	int	i;
 	int	j;
@@ -40,7 +40,7 @@ void	parse_player(t_map *map, t_player *player)
 		{
 			if (ft_strchr("NSEW", map->grid[i][j]))
 			{
-				set_player(container_of(player), j, i, map->grid[i][j]);
+				set_player(container_of(game), j, i, map->grid[i][j]);
 				map->grid[i][j] = '0';
 			}
 			j++;

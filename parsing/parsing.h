@@ -10,10 +10,13 @@ void	parse_texture(char **dst, char *str);
 void	parse_color(int *dst, char *str);
 void	append_map_line(t_map *map, char *line);
 void	make_map_rectangular(t_map *map);
-void	parse_player(t_map *map, t_player *player);
+void	parse_player(t_map *map, t_player *player, t_game *game);
 void	validate_map(t_map *map);
 int		is_empty(char *line);
 int		count_args(char **arr);
 void	free_split(char **arr);
-
+int     find_longest_line(t_map *map);
+char    *pad_with_spaces(char *line, int length);
+void    init_player_direction(t_player *player, char dir);
+t_game  *container_of(t_game *game);
 #endif

@@ -34,10 +34,10 @@ static void	free_map(t_map *map)
 static void	free_images(t_game *game)
 {
 	if (game->frame.img)
-		mlx_destroy_image(game->mlx, game->frame.img);
+		mlx_delete_image(game->mlx, game->frame.img);
 	for (int i = 0; i < 4; i++)
 		if (game->tex[i].img)
-			mlx_destroy_image(game->mlx, game->tex[i].img);
+			mlx_delete_image(game->mlx, game->tex[i].img);
 }
 
 void	free_game(t_game *game)
@@ -48,7 +48,7 @@ void	free_game(t_game *game)
 	free_map(&game->map);
 	free_images(game);
 	if (game->win)
-		mlx_destroy_window(game->mlx, game->win);
+		mlx_terminate(game->mlx);
 	game->win = NULL;
 	game->mlx = NULL;
 }
