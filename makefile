@@ -4,9 +4,8 @@ CC		= cc
 CFLAGS	= -Wall -Wextra -Werror -g
 
 LIBFT	= libft/libft.a
-MLX		= mlx/libmlx42.a
 
-INCLUDES = -Iincludes -Ilibft -Imlx/include
+INCLUDES = -Iincludes -Ilibft
 
 SRC = \
 	main.c \
@@ -28,18 +27,14 @@ OBJ = $(SRC:.c=.o)
 all: $(NAME)
 
 $(NAME): $(OBJ) $(LIBFT) $(MLX)
-	$(CC) $(CFLAGS) $(OBJ) $(LIBFT) $(MLX) -Iinclude -ldl -lglfw -pthread -lm -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJ) $(LIBFT) -Iinclude -o $(NAME)
 
 $(LIBFT):
 	make -C libft
 
-$(MLX):
-	make -C mlx
-
 clean:
 	rm -f $(OBJ)
 	make -C libft clean
-	make -C mlx clean
 
 fclean: clean
 	rm -f $(NAME)

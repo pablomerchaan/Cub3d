@@ -9,7 +9,7 @@ static int	is_valid_number(char *str)
 		return (0);
 	while (str[i])
 	{
-		if (!ft_isdigit(str[i]))
+		if (!ft_isdigit(str[i]) && !is_space(str[i]))
 			return (0);
 		i++;
 	}
@@ -42,18 +42,21 @@ static int	build_color(char **rgb)
 	return ((r << 16) | (g << 8) | b);
 }
 
-void	parse_color(int *dst, char *str)
+void	parse_color(int dst, char *str, int sw)
 {
 	char	*clean;
 	char	**rgb;
 
-	if (*dst != -1)
+	if (dst != -1)
 		error_exit("Duplicate color");
 	clean = ft_strtrim(str, " \t\n");
 	if (!clean || clean[0] == '\0')
 		error_exit("Invalid color line");
 	rgb = ft_split(clean, ',');
 	free(clean);
-	*dst = build_color(rgb);
+	if (sw == 1)
+		g_game->config.floor_color = build_color(rgb);
+	else if (sw == 2)
+		g_game->config.ceil_color = build_color(rgb);
 	free_split(rgb);
 }

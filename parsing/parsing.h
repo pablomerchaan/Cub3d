@@ -3,14 +3,15 @@
 
 #include "../cub3d.h"
 
+int is_space(char s);
 int		is_param(char *line);
-void	parse_param(char *line, t_game *game);
+void	parse_param(char *line);
 int		all_params_set(t_config *cfg);
 void	parse_texture(char **dst, char *str);
-void	parse_color(int *dst, char *str);
+void	parse_color(int dst, char *str, int sw);
 void	append_map_line(t_map *map, char *line);
 void	make_map_rectangular(t_map *map);
-void	parse_player(t_map *map, t_player *player, t_game *game);
+void	parse_player(t_map *map, t_player *player);
 void	validate_map(t_map *map);
 int		is_empty(char *line);
 int		count_args(char **arr);

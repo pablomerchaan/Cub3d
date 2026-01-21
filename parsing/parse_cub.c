@@ -17,14 +17,40 @@ static int	is_map_line(char *line)
 	return (1);
 }
 
-static void	add_map_line(t_game *game, char *line)
+void append_map_line(t_map *map, char *line)
 {
-	if (is_empty(line))
-		error_exit("Empty line inside map");
-	append_map_line(&game->map, line);
+    char    **new_grid;
+    int     i;
+
+    new_grid = malloc(sizeof(char *) * (map->height + 2));
+    if (!new_grid)
+        error_exit("Malloc failed");
+
+    i = 0;
+    while (i < map->height)
+    {
+        new_grid[i] = map->grid[i];
+        i++;
+    }
+
+    new_grid[i] = line;
+    new_grid[i + 1] = NULL;
+
+    free(map->grid);
+    map->grid = new_grid;
+    map->height++;
 }
 
-static void	parse_lines(int fd, t_game *game)
+static void	add_map_line(char *line)
+{
+	char *copy;
+	if (is_empty(line))
+		error_exit("Empty line inside map");
+	copy = ft_strdup(line);
+	append_map_line(&g_game->map, copy);
+}
+
+static void	parse_lines(int fd)
 {
 	char	*line;
 	int		map_started;
@@ -35,34 +61,34 @@ static void	parse_lines(int fd, t_game *game)
 		if (!map_started && is_empty(line))
 			free(line);
 		else if (!map_started && is_param(line))
-			parse_param(line, game);
+			parse_param(line);
 		else
 		{
 			if (!is_map_line(line))
 				error_exit("Invalid line in map");
 			map_started = 1;
-			add_map_line(game, line);
+			add_map_line(line);
 		}
 	}
 }
 
-static void	finalize_parse(t_game *game)
+static void	finalize_parse(void)
 {
-	if (!all_params_set(&game->config))
+	if (!all_params_set(&g_game->config))
 		error_exit("Missing parameters");
-	make_map_rectangular(&game->map);
-	parse_player(&game->map, &game->player, game);
-	validate_map(&game->map);
+	make_map_rectangular(&g_game->map);
+	parse_player(&g_game->map, &g_game->player);
+	validate_map(&g_game->map);
 }
 
-void	parse_cub(char *file, t_game *game)
+void	parse_cub(char *file)
 {
 	int	fd;
 
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
 		error_exit("Cannot open .cub file");
-	parse_lines(fd, game);
+	parse_lines(fd);
 	close(fd);
-	finalize_parse(game);
+	finalize_parse();
 }

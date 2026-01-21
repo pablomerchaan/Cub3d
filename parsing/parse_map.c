@@ -15,17 +15,17 @@ void	make_map_rectangular(t_map *map)
 	map->width = max;
 }
 
-static void	set_player(t_game *game, int x, int y, char dir)
+static void	set_player(int x, int y, char dir)
 {
-	if (game->player.dir_x != 0 || game->player.dir_y != 0)
+	if (g_game->player.dir_x != 0 || g_game->player.dir_y != 0)
 		error_exit("Multiple players");
 
-	game->player.x = x + 0.5;
-	game->player.y = y + 0.5;
-	init_player_direction(&game->player, dir);
+	g_game->player.x = x + 0.5;
+	g_game->player.y = y + 0.5;
+	init_player_direction(&g_game->player, dir);
 }
 
-void	parse_player(t_map *map, t_player *player, t_game *game)
+void	parse_player(t_map *map, t_player *player)
 {
 	int	i;
 	int	j;
@@ -40,7 +40,7 @@ void	parse_player(t_map *map, t_player *player, t_game *game)
 		{
 			if (ft_strchr("NSEW", map->grid[i][j]))
 			{
-				set_player(container_of(game), j, i, map->grid[i][j]);
+				set_player(j, i, map->grid[i][j]);
 				map->grid[i][j] = '0';
 			}
 			j++;

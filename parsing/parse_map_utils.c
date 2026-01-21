@@ -49,8 +49,3 @@ void init_player_direction(t_player *player, char dir)
     else if (dir == 'W')
         player->dir_x = -1.0;
 }
-
-t_game *container_of(t_game *game_ptr)
-{
-    return game_ptr;
-}

@@ -1,15 +1,15 @@
 #include "cub3d.h"
 
-static void	free_textures(t_game *game)
+static void	free_textures(void)
 {
-	if (game->config.no)
-		free(game->config.no);
-	if (game->config.so)
-		free(game->config.so);
-	if (game->config.we)
-		free(game->config.we);
-	if (game->config.ea)
-		free(game->config.ea);
+	if (g_game->config.no)
+		free(g_game->config.no);
+	if (g_game->config.so)
+		free(g_game->config.so);
+	if (g_game->config.we)
+		free(g_game->config.we);
+	if (g_game->config.ea)
+		free(g_game->config.ea);
 }
 
 static void	free_map(t_map *map)
@@ -30,7 +30,7 @@ static void	free_map(t_map *map)
 	map->height = 0;
 	map->width = 0;
 }
-
+/*
 static void	free_images(t_game *game)
 {
 	if (game->frame.img)
@@ -39,16 +39,16 @@ static void	free_images(t_game *game)
 		if (game->tex[i].img)
 			mlx_delete_image(game->mlx, game->tex[i].img);
 }
-
-void	free_game(t_game *game)
+*/
+void	free_game()
 {
-	if (!game)
+	if (!g_game)
 		return ;
-	free_textures(game);
-	free_map(&game->map);
-	free_images(game);
-	if (game->win)
-		mlx_terminate(game->mlx);
-	game->win = NULL;
-	game->mlx = NULL;
+	free_textures();
+	free_map(&g_game->map);
+//	free_images(game);
+//	if (game->win)
+	//	mlx_terminate(game->mlx);
+	g_game->win = NULL;
+	g_game->mlx = NULL;
 }

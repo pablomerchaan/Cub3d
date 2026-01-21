@@ -1,5 +1,14 @@
 #include "parsing.h"
 
+int is_space(char s)
+{
+	
+		if (s != ' ' && s != '\n' && s != '\t' && s != '\r'
+				&& s != '\f' && s != '\v')
+			return (0);
+		return (1);
+}
+
 int	is_empty(char *line)
 {
 	int	i;
@@ -7,8 +16,7 @@ int	is_empty(char *line)
 	i = 0;
 	while (line[i])
 	{
-		if (line[i] != ' ' && line[i] != '\n' && line[i] != '\t' && line[i] != '\r'
-				&& line[i] != '\f' && line[i] != '\v')
+		if (!is_space(line[i]))
 			return (0);
 		i++;
 	}

@@ -7,7 +7,6 @@
 # include <math.h>
 # include <fcntl.h>
 #include "libft/libft.h"
-#include "mlx/include/MLX42/MLX42.h"
 #include "getnextline/get_next_line.h"
 
 typedef struct s_player {
@@ -55,9 +54,11 @@ typedef struct s_game
 	t_img		tex[4];
 }	t_game;
 
-void	parse_cub(char *file, t_game *game);
+extern t_game *g_game;
+
+void	parse_cub(char *file);
 void	error_exit(char *msg);
-void	free_game(t_game *game);
-void	init_game(t_game *game);
+void	free_game(void);
+void	init_game(void);
 
 #endif

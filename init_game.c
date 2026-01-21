@@ -27,31 +27,31 @@ static void	init_player(t_player *p)
 	p->plane_y = 0;
 }
 
-static void	init_images(t_game *game)
+static void	init_images(void)
 {
 	int	i;
 
-	game->frame.img = NULL;
-	game->frame.addr = NULL;
-	game->frame.width = 0;
-	game->frame.height = 0;
+	g_game->frame.img = NULL;
+	g_game->frame.addr = NULL;
+	g_game->frame.width = 0;
+	g_game->frame.height = 0;
 	i = 0;
 	while (i < 4)
 	{
-		game->tex[i].img = NULL;
-		game->tex[i].addr = NULL;
-		game->tex[i].width = 0;
-		game->tex[i].height = 0;
+		g_game->tex[i].img = NULL;
+		g_game->tex[i].addr = NULL;
+		g_game->tex[i].width = 0;
+		g_game->tex[i].height = 0;
 		i++;
 	}
 }
 
-void	init_game(t_game *game)
+void	init_game()
 {
-	game->mlx = NULL;
-	game->win = NULL;
-	init_config(&game->config);
-	init_map(&game->map);
-	init_player(&game->player);
-	init_images(game);
+	g_game->mlx = NULL;
+	g_game->win = NULL;
+	init_config(&g_game->config);
+	init_map(&g_game->map);
+	init_player(&g_game->player);
+	init_images();
 }
