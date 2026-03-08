@@ -21,6 +21,7 @@ C_FILES = ft_bzero.c \
           ft_memset.c \
           ft_strdup.c \
           ft_strlcpy.c\
+          ft_strcmp.c\
           ft_strncmp.c\
           ft_strrchr.c\
           ft_tolower.c\

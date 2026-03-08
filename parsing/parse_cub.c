@@ -36,38 +36,39 @@ void append_map_line(t_map *map, char *line)
     new_grid[i] = line;
     new_grid[i + 1] = NULL;
 
-    free(map->grid);
+    if (map->grid)
+        free(map->grid);
     map->grid = new_grid;
     map->height++;
-}
-
-static void	add_map_line(char *line)
-{
-	char *copy;
-	if (is_empty(line))
-		error_exit("Empty line inside map");
-	copy = ft_strdup(line);
-	append_map_line(&g_game->map, copy);
 }
 
 static void	parse_lines(int fd)
 {
 	char	*line;
 	int		map_started;
+    char    *clean_line;
 
 	map_started = 0;
 	while ((line = get_next_line(fd)))
 	{
-		if (!map_started && is_empty(line))
-			free(line);
-		else if (!map_started && is_param(line))
-			parse_param(line);
+        // En caso de que GNL traiga saltos de línea al final, limpiamos
+        clean_line = ft_strtrim(line, "\n");
+        free(line); // Liberamos la original de GNL de inmediato
+        
+		if (!map_started && is_empty(clean_line))
+			free(clean_line);
+		else if (!map_started && is_param(clean_line))
+        {
+			parse_param(clean_line);
+            free(clean_line);
+        }
 		else
 		{
-			if (!is_map_line(line))
+			if (!is_map_line(clean_line))
 				error_exit("Invalid line in map");
 			map_started = 1;
-			add_map_line(line);
+            // append_map_line ahora "posee" este puntero. No le hacemos free aquí.
+			append_map_line(&g_game->map, clean_line); 
 		}
 	}
 }

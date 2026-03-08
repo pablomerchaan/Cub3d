@@ -40,12 +40,17 @@ void init_player_direction(t_player *player, char dir)
     player->plane_x = 0.0;
     player->plane_y = 0.0;
 
-    if (dir == 'N')
+    if (dir == 'N') {
         player->dir_y = -1.0;
-    else if (dir == 'S')
+        player->plane_x = 0.66;
+    } else if (dir == 'S') {
         player->dir_y = 1.0;
-    else if (dir == 'E')
+        player->plane_x = -0.66;
+    } else if (dir == 'E') {
         player->dir_x = 1.0;
-    else if (dir == 'W')
+        player->plane_y = 0.66;
+    } else if (dir == 'W') {
         player->dir_x = -1.0;
+        player->plane_y = -0.66;
+    }
 }

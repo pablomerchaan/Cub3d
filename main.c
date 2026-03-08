@@ -1,49 +1,6 @@
-#include "parsing/parsing.h"
-#include <stdio.h>
+#include "cub3d.h"
 
 t_game *g_game = NULL;
-
-static void print_config(void)
-{
-    printf("=== TEXTURES ===\n");
-    printf("NO: %s\n", g_game->config.no);
-    printf("SO: %s\n", g_game->config.so);
-    printf("WE: %s\n", g_game->config.we);
-    printf("EA: %s\n", g_game->config.ea);
-
-    printf("\n=== COLORS ===\n");
-    printf("Floor:   %d (0x%06X)\n",
-        g_game->config.floor_color, g_game->config.floor_color);
-    printf("Ceiling: %d (0x%06X)\n",
-        g_game->config.ceil_color, g_game->config.ceil_color);
-}
-
-static void print_player(void)
-{
-    printf("\n=== PLAYER ===\n");
-    printf("Position: (%.2f, %.2f)\n",
-        g_game->player.x, g_game->player.y);
-    printf("Direction: (%.2f, %.2f)\n",
-        g_game->player.dir_x, g_game->player.dir_y);
-    printf("Plane: (%.2f, %.2f)\n",
-        g_game->player.plane_x, g_game->player.plane_y);
-}
-
-static void print_map(void)
-{
-    int i;
-
-    printf("\n=== MAP ===\n");
-    printf("Size: %d x %d\n",
-        g_game->map.width, g_game->map.height);
-
-    i = 0;
-    while (i < g_game->map.height)
-    {
-        printf("%s\n", g_game->map.grid[i]);
-        i++;
-    }
-}
 
 int main(int argc, char **argv)
 {
@@ -57,22 +14,29 @@ int main(int argc, char **argv)
     if (!g_game)
         return (1);
 
+    // Inicialización pre-parser
+    g_game->config.floor_color = -1;
+    g_game->config.ceil_color = -1;
+    g_game->config.no = NULL;
+    g_game->config.so = NULL;
+    g_game->config.we = NULL;
+    g_game->config.ea = NULL;
+    g_game->map.grid = NULL;
+    g_game->map.width = 0;
+    g_game->map.height = 0;
+    g_game->mlx = NULL; 
+    g_game->frame = NULL;
+    g_game->player.pitch = 0;
+
+    parse_cub(argv[1]);
     init_game();
-		parse_cub(argv[1]);
-/*
-    if (!parse_cub(argv[1]))
-    {
-        printf("❌ Parse error\n");
-        free_game();
-        return (1);
-    }
-*/
-    printf("✅ Parse OK\n\n");
 
-    print_config();
-    print_player();
-    print_map();
+    mlx_loop_hook(g_game->mlx, game_loop, NULL);
+    mlx_loop(g_game->mlx);
 
-    free_game();
+    mlx_terminate(g_game->mlx); 
+    free_game();                
+    free(g_game);
+    
     return (0);
 }

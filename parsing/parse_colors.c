@@ -39,7 +39,7 @@ static int	build_color(char **rgb)
 	r = parse_rgb_value(rgb[0]);
 	g = parse_rgb_value(rgb[1]);
 	b = parse_rgb_value(rgb[2]);
-	return ((r << 16) | (g << 8) | b);
+	return ((r << 24) | (g << 16) | (b << 8) | 255);
 }
 
 void	parse_color(int dst, char *str, int sw)
