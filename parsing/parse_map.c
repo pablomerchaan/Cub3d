@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_map.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: almarti3 <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/08 18:25:24 by almarti3          #+#    #+#             */
+/*   Updated: 2026/03/08 18:25:26 by almarti3         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "parsing.h"
 
 void	make_map_rectangular(t_map *map)
@@ -19,7 +31,6 @@ static void	set_player(int x, int y, char dir)
 {
 	if (g_game->player.dir_x != 0 || g_game->player.dir_y != 0)
 		error_exit("Multiple players");
-
 	g_game->player.x = x + 0.5;
 	g_game->player.y = y + 0.5;
 	init_player_direction(&g_game->player, dir);

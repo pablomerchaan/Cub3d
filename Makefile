@@ -11,11 +11,12 @@ MLX_FLAGS = -lglfw -ldl -pthread -lm
 
 INCLUDES  = -I./includes -I$(LIBFT_DIR) -I$(MLX_DIR)/include
 
-SRC = main.c errors.c free_game.c init_game.c raycasting.c \
+SRC = main.c errors.c free_game.c init_game.c movement.c \
       parsing/parse_cub.c parsing/parse_params.c \
       parsing/parse_textures.c parsing/parse_colors.c \
       parsing/parse_map.c parsing/parse_map_utils.c \
       parsing/map_validation.c parsing/utils.c \
+	  rendering/minimap.c rendering/raycasting.c \
       getnextline/get_next_line.c \
 	  getnextline/get_next_line_utils.c
 

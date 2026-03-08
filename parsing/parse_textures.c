@@ -1,45 +1,56 @@
+/* ************************************************************************** */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   parse_textures.c								   :+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: almarti3 <marvin@42.fr>					+#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2026/03/08 18:25:46 by almarti3		  #+#	#+#			 */
+/*   Updated: 2026/03/08 18:25:47 by almarti3		 ###   ########.fr	   */
+/*																			*/
+/* ************************************************************************** */
+
 #include "parsing.h"
 
-static int  has_png_extension(char *path)
+static int	has_png_extension(char *path)
 {
-    int len;
+	int	len;
 
-    len = ft_strlen(path);
-    if (len < 4)
-        return (0);
-    return (!ft_strncmp(path + len - 4, ".png", 4));
+	len = ft_strlen(path);
+	if (len < 4)
+		return (0);
+	return (!ft_strncmp(path + len - 4, ".png", 4));
 }
 
-static char *extract_path(char *str)
+static char	*extract_path(char *str)
 {
-    char    *path;
+	char	*path;
 
-    path = ft_strtrim(str, " \t\n\r"); // Añadido \r por si viene de Windows
-    if (!path || path[0] == '\0')
-        error_exit("Invalid texture path");
-    return (path);
+	path = ft_strtrim(str, " \t\n\r");
+	if (!path || path[0] == '\0')
+		error_exit("Invalid texture path");
+	return (path);
 }
 
-static void check_texture_file(char *path)
+static void	check_texture_file(char *path)
 {
-    int fd;
+	int	fd;
 
-    if (!has_png_extension(path))
-        error_exit("Texture must be .png");
-    fd = open(path, O_RDONLY);
-    if (fd < 0)
-        error_exit("Texture file cannot be opened");
-    close(fd);
+	if (!has_png_extension(path))
+		error_exit("Texture must be .png");
+	fd = open(path, O_RDONLY);
+	if (fd < 0)
+		error_exit("Texture file cannot be opened");
+	close(fd);
 }
 
-void    parse_texture(char **dst, char *str)
+void	parse_texture(char **dst, char *str)
 {
-    char    *path;
+	char	*path;
 
-    if (*dst != NULL)
-        error_exit("Duplicate texture");
-
-    path = extract_path(str);
-    check_texture_file(path);
-    *dst = path;
+	if (*dst != NULL)
+		error_exit("Duplicate texture");
+	path = extract_path(str);
+	check_texture_file(path);
+	*dst = path;
 }

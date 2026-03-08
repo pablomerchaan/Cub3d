@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   map_validation.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: almarti3 <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/08 18:23:34 by almarti3          #+#    #+#             */
+/*   Updated: 2026/03/08 18:23:37 by almarti3         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "parsing.h"
 
 static int	is_walkable(char c)
@@ -11,7 +23,6 @@ static void	check_cell(t_map *map, int i, int j)
 		|| i == map->height - 1
 		|| j == map->width - 1)
 		error_exit("Map not closed");
-
 	if (map->grid[i - 1][j] == ' '
 		|| map->grid[i + 1][j] == ' '
 		|| map->grid[i][j - 1] == ' '

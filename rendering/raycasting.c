@@ -1,0 +1,141 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   raycasting.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: almarti3 <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/08 19:31:08 by almarti3          #+#    #+#             */
+/*   Updated: 2026/03/08 19:31:09 by almarti3         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../cub3d.h"
+
+static void	init_ray(t_ray *r, t_player *p, int x)
+{
+	r->cam_x = 2 * x / (double)WIDTH - 1;
+	r->dir_x = p->dir_x + p->plane_x * r->cam_x;
+	r->dir_y = p->dir_y + p->plane_y * r->cam_x;
+	r->map_x = (int)p->x;
+	r->map_y = (int)p->y;
+	r->delta_x = fabs(1 / r->dir_x);
+	r->delta_y = fabs(1 / r->dir_y);
+	r->hit = 0;
+	r->step_x = 1;
+	r->side_x = (r->map_x + 1.0 - p->x) * r->delta_x;
+	if (r->dir_x < 0)
+	{
+		r->step_x = -1;
+		r->side_x = (p->x - r->map_x) * r->delta_x;
+	}
+	r->step_y = 1;
+	r->side_y = (r->map_y + 1.0 - p->y) * r->delta_y;
+	if (r->dir_y < 0)
+	{
+		r->step_y = -1;
+		r->side_y = (p->y - r->map_y) * r->delta_y;
+	}
+}
+
+static void	perform_dda(t_ray *r)
+{
+	while (r->hit == 0)
+	{
+		if (r->side_x < r->side_y)
+		{
+			r->side_x += r->delta_x;
+			r->map_x += r->step_x;
+			r->side = 0;
+		}
+		else
+		{
+			r->side_y += r->delta_y;
+			r->map_y += r->step_y;
+			r->side = 1;
+		}
+		if (g_game->map.grid[r->map_y][r->map_x] == '1')
+			r->hit = 1;
+	}
+	if (r->side == 0)
+		r->perp_dist = (r->side_x - r->delta_x);
+	else
+		r->perp_dist = (r->side_y - r->delta_y);
+}
+
+static void	calc_projection(t_ray *r, t_player *p)
+{
+	r->line_h = (int)(HEIGHT / r->perp_dist);
+	r->draw_start = -r->line_h / 2 + HEIGHT / 2 + p->pitch;
+	if (r->draw_start < 0)
+		r->draw_start = 0;
+	r->draw_end = r->line_h / 2 + HEIGHT / 2 + p->pitch;
+	if (r->draw_end >= HEIGHT)
+		r->draw_end = HEIGHT - 1;
+	if (r->side == 0 && r->dir_x > 0)
+		r->tex_num = 3;
+	else if (r->side == 0 && r->dir_x < 0)
+		r->tex_num = 2;
+	else if (r->side == 1 && r->dir_y > 0)
+		r->tex_num = 1;
+	else
+		r->tex_num = 0;
+	if (r->side == 0)
+		r->wall_x = p->y + r->perp_dist * r->dir_y;
+	else
+		r->wall_x = p->x + r->perp_dist * r->dir_x;
+	r->wall_x -= floor(r->wall_x);
+	r->tex_x = (int)(r->wall_x * (double)g_game->tex[r->tex_num]->width);
+	if ((r->side == 0 && r->dir_x > 0) || (r->side == 1 && r->dir_y < 0))
+		r->tex_x = g_game->tex[r->tex_num]->width - r->tex_x - 1;
+}
+
+static void	draw_column(t_ray *r, int x, t_player *p)
+{
+	mlx_texture_t	*t;
+	double			d[2];
+	uint32_t		c;
+	int				y;
+	int				i;
+
+	t = g_game->tex[r->tex_num];
+	d[0] = 1.0 * t->height / r->line_h;
+	d[1] = (r->draw_start - p->pitch - HEIGHT / 2.0 + r->line_h / 2.0) * d[0];
+	y = r->draw_start;
+	while (y <= r->draw_end)
+	{
+		i = (((int)d[1] & (t->height - 1)) * t->width + r->tex_x) * 4;
+		d[1] += d[0];
+		c = (t->pixels[i] << 24) | (t->pixels[i + 1] << 16);
+		c |= (t->pixels[i + 2] << 8) | t->pixels[i + 3];
+		if (r->side == 1)
+		{
+			c = ((t->pixels[i] / 2) << 24) | ((t->pixels[i + 1] / 2) << 16);
+			c |= ((t->pixels[i + 2] / 2) << 8) | t->pixels[i + 3];
+		}
+		mlx_put_pixel(g_game->frame, x, y, c);
+		y++;
+	}
+}
+
+void	game_loop(void *param)
+{
+	t_ray		r;
+	t_player	*p;
+	int			x;
+
+	(void)param;
+	handle_movement();
+	p = &g_game->player;
+	draw_background();
+	x = 0;
+	while (x < WIDTH)
+	{
+		init_ray(&r, p, x);
+		perform_dda(&r);
+		calc_projection(&r, p);
+		draw_column(&r, x, p);
+		x++;
+	}
+	draw_minimap();
+}

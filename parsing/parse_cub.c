@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   parse_cub.c										:+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: almarti3 <marvin@42.fr>					+#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2026/03/08 18:24:08 by almarti3		  #+#	#+#			 */
+/*   Updated: 2026/03/08 18:24:09 by almarti3		 ###   ########.fr	   */
+/*																			*/
+/* ************************************************************************** */
+
 #include "parsing.h"
 
 static int	is_map_line(char *line)
@@ -17,59 +29,38 @@ static int	is_map_line(char *line)
 	return (1);
 }
 
-void append_map_line(t_map *map, char *line)
+static void	handle_line(char *clean, int *started)
 {
-    char    **new_grid;
-    int     i;
-
-    new_grid = malloc(sizeof(char *) * (map->height + 2));
-    if (!new_grid)
-        error_exit("Malloc failed");
-
-    i = 0;
-    while (i < map->height)
-    {
-        new_grid[i] = map->grid[i];
-        i++;
-    }
-
-    new_grid[i] = line;
-    new_grid[i + 1] = NULL;
-
-    if (map->grid)
-        free(map->grid);
-    map->grid = new_grid;
-    map->height++;
+	if (!*started && is_empty(clean))
+		free(clean);
+	else if (!*started && is_param(clean))
+	{
+		parse_param(clean);
+		free(clean);
+	}
+	else
+	{
+		if (!is_map_line(clean))
+			error_exit("Invalid line in map");
+		*started = 1;
+		append_map_line(&g_game->map, clean);
+	}
 }
 
 static void	parse_lines(int fd)
 {
 	char	*line;
-	int		map_started;
-    char    *clean_line;
+	int		started;
+	char	*clean;
 
-	map_started = 0;
-	while ((line = get_next_line(fd)))
+	started = 0;
+	line = get_next_line(fd);
+	while (line)
 	{
-        // En caso de que GNL traiga saltos de línea al final, limpiamos
-        clean_line = ft_strtrim(line, "\n");
-        free(line); // Liberamos la original de GNL de inmediato
-        
-		if (!map_started && is_empty(clean_line))
-			free(clean_line);
-		else if (!map_started && is_param(clean_line))
-        {
-			parse_param(clean_line);
-            free(clean_line);
-        }
-		else
-		{
-			if (!is_map_line(clean_line))
-				error_exit("Invalid line in map");
-			map_started = 1;
-            // append_map_line ahora "posee" este puntero. No le hacemos free aquí.
-			append_map_line(&g_game->map, clean_line); 
-		}
+		clean = ft_strtrim(line, "\n");
+		free(line);
+		handle_line(clean, &started);
+		line = get_next_line(fd);
 	}
 }
 
