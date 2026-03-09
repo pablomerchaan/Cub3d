@@ -84,14 +84,14 @@ void	init_player_direction(t_player *player, char dir)
 	}
 }
 
-void	append_map_line(t_map *map, char *line)
+void	append_map_line(t_game *game, t_map *map, char *line)
 {
 	char	**new_grid;
 	int		i;
 
 	new_grid = malloc(sizeof(char *) * (map->height + 2));
 	if (!new_grid)
-		error_exit("Malloc failed");
+		error_exit(game, "Malloc failed");
 	i = 0;
 	while (i < map->height)
 	{

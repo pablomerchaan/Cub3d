@@ -22,9 +22,9 @@ static void	put_error(char *msg)
 	}
 }
 
-void	error_exit(char *msg)
+void	error_exit(t_game *game, char *msg)
 {
 	put_error(msg);
-	free_game();
+	free_game(game);
 	exit(EXIT_FAILURE);
 }

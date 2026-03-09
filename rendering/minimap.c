@@ -13,7 +13,7 @@
 #include "../cub3d.h"
 
 // Dibuja un cuadrado protegiendo los límites de la pantalla (Evita Segfaults)
-static void	draw_square(int x, int y, uint32_t color, int size)
+static void	draw_square(t_game *game, int x, int y, uint32_t color, int size)
 {
 	int	i;
 	int	j;
@@ -25,7 +25,7 @@ static void	draw_square(int x, int y, uint32_t color, int size)
 		while (j < size)
 		{
 			if (x + j >= 0 && x + j < WIDTH && y + i >= 0 && y + i < HEIGHT)
-				mlx_put_pixel(g_game->frame, x + j, y + i, color);
+				mlx_put_pixel(game->frame, x + j, y + i, color);
 			j++;
 		}
 		i++;
@@ -33,39 +33,39 @@ static void	draw_square(int x, int y, uint32_t color, int size)
 }
 
 // Escanea la matriz y dibuja el mapa y al jugador
-void	draw_minimap(void)
+void	draw_minimap(t_game *game)
 {
 	int	y;
 	int	x;
 	int	p_size;
 
 	y = 0;
-	while (y < g_game->map.height)
+	while (y < game->map.height)
 	{
 		x = 0;
-		while (x < g_game->map.width)
+		while (x < game->map.width)
 		{
-			if (g_game->map.grid[y][x] == '1')
-				draw_square(x * MM_SCALE, y * MM_SCALE, MM_WALL, MM_SCALE);
-			else if (g_game->map.grid[y][x] != ' '
-				&& g_game->map.grid[y][x] != '\0')
-				draw_square(x * MM_SCALE, y * MM_SCALE, MM_FLOOR, MM_SCALE);
+			if (game->map.grid[y][x] == '1')
+				draw_square(game, x * MM_SCALE, y * MM_SCALE, MM_WALL, MM_SCALE);
+			else if (game->map.grid[y][x] != ' '
+				&& game->map.grid[y][x] != '\0')
+				draw_square(game, x * MM_SCALE, y * MM_SCALE, MM_FLOOR, MM_SCALE);
 			x++;
 		}
 		y++;
 	}
 	p_size = MM_SCALE / 2;
-	draw_square((int)(g_game->player.x * MM_SCALE) - (p_size / 2),
-		(int)(g_game->player.y * MM_SCALE) - (p_size / 2), MM_PLAYER, p_size);
+	draw_square(game, (int)(game->player.x * MM_SCALE) - (p_size / 2),
+		(int)(game->player.y * MM_SCALE) - (p_size / 2), MM_PLAYER, p_size);
 }
 
-void	draw_background(void)
+void	draw_background(t_game *game)
 {
 	int	x;
 	int	y;
 	int	horizon;
 
-	horizon = HEIGHT / 2 + g_game->player.pitch;
+	horizon = HEIGHT / 2 + game->player.pitch;
 	y = 0;
 	while (y < HEIGHT)
 	{
@@ -73,9 +73,9 @@ void	draw_background(void)
 		while (x < WIDTH)
 		{
 			if (y < horizon)
-				mlx_put_pixel(g_game->frame, x, y, g_game->config.ceil_color);
+				mlx_put_pixel(game->frame, x, y, game->config.ceil_color);
 			else
-				mlx_put_pixel(g_game->frame, x, y, g_game->config.floor_color);
+				mlx_put_pixel(game->frame, x, y, game->config.floor_color);
 			x++;
 		}
 		y++;

@@ -12,8 +12,6 @@
 
 #include "cub3d.h"
 
-t_game	*g_game = NULL;
-
 static int	check_extension(char *file, char *ext)
 {
 	int	len_file;
@@ -28,24 +26,25 @@ static int	check_extension(char *file, char *ext)
 	return (1);
 }
 
-static void	init_struct(void)
+static void	init_struct(t_game *game)
 {
-	g_game->config.floor_color = -1;
-	g_game->config.ceil_color = -1;
-	g_game->config.no = NULL;
-	g_game->config.so = NULL;
-	g_game->config.we = NULL;
-	g_game->config.ea = NULL;
-	g_game->map.grid = NULL;
-	g_game->map.width = 0;
-	g_game->map.height = 0;
-	g_game->mlx = NULL;
-	g_game->frame = NULL;
-	g_game->player.pitch = 0;
+	game->config.floor_color = -1;
+	game->config.ceil_color = -1;
+	game->config.no = NULL;
+	game->config.so = NULL;
+	game->config.we = NULL;
+	game->config.ea = NULL;
+	game->map.grid = NULL;
+	game->map.width = 0;
+	game->map.height = 0;
+	game->mlx = NULL;
+	game->frame = NULL;
+	game->player.pitch = 0;
 }
 
 int	main(int argc, char **argv)
 {
+	t_game *game;
 	if (argc != 2)
 	{
 		printf("Error\nUsage: %s <map.cub>\n", argv[0]);
@@ -56,16 +55,16 @@ int	main(int argc, char **argv)
 		printf("Error\nMap file must have a .cub extension\n");
 		return (1);
 	}
-	g_game = malloc(sizeof(t_game));
-	if (!g_game)
+	game = malloc(sizeof(t_game));
+	if (!game)
 		return (1);
-	init_struct();
-	parse_cub(argv[1]);
-	init_game();
-	mlx_loop_hook(g_game->mlx, game_loop, NULL);
-	mlx_loop(g_game->mlx);
-	mlx_terminate(g_game->mlx);
-	free_game();
-	free(g_game);
+	init_struct(game);
+	parse_cub(game, argv[1]);
+	init_game(game);
+	mlx_loop_hook(game->mlx, game_loop, game);
+	mlx_loop(game->mlx);
+	mlx_terminate(game->mlx);
+	free_game(game);
+	free(game);
 	return (0);
 }

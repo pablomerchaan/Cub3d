@@ -22,35 +22,35 @@ static int	has_png_extension(char *path)
 	return (!ft_strncmp(path + len - 4, ".png", 4));
 }
 
-static char	*extract_path(char *str)
+static char	*extract_path(t_game *game, char *str)
 {
 	char	*path;
 
 	path = ft_strtrim(str, " \t\n\r");
 	if (!path || path[0] == '\0')
-		error_exit("Invalid texture path");
+		error_exit(game, "Invalid texture path");
 	return (path);
 }
 
-static void	check_texture_file(char *path)
+static void	check_texture_file(t_game *game, char *path)
 {
 	int	fd;
 
 	if (!has_png_extension(path))
-		error_exit("Texture must be .png");
+		error_exit(game, "Texture must be .png");
 	fd = open(path, O_RDONLY);
 	if (fd < 0)
-		error_exit("Texture file cannot be opened");
+		error_exit(game, "Texture file cannot be opened");
 	close(fd);
 }
 
-void	parse_texture(char **dst, char *str)
+void	parse_texture(t_game *game, char **dst, char *str)
 {
 	char	*path;
 
 	if (*dst != NULL)
-		error_exit("Duplicate texture");
-	path = extract_path(str);
-	check_texture_file(path);
+		error_exit(game, "Duplicate texture");
+	path = extract_path(game, str);
+	check_texture_file(game, path);
 	*dst = path;
 }

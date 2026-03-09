@@ -38,7 +38,7 @@ static void	init_ray(t_ray *r, t_player *p, int x)
 	}
 }
 
-static void	perform_dda(t_ray *r)
+static void	perform_dda(t_game *game, t_ray *r)
 {
 	while (r->hit == 0)
 	{
@@ -54,7 +54,7 @@ static void	perform_dda(t_ray *r)
 			r->map_y += r->step_y;
 			r->side = 1;
 		}
-		if (g_game->map.grid[r->map_y][r->map_x] == '1')
+		if (game->map.grid[r->map_y][r->map_x] == '1')
 			r->hit = 1;
 	}
 	if (r->side == 0)
@@ -63,7 +63,7 @@ static void	perform_dda(t_ray *r)
 		r->perp_dist = (r->side_y - r->delta_y);
 }
 
-static void	calc_projection(t_ray *r, t_player *p)
+static void	calc_projection(t_game *game, t_ray *r, t_player *p)
 {
 	r->line_h = (int)(HEIGHT / r->perp_dist);
 	r->draw_start = -r->line_h / 2 + HEIGHT / 2 + p->pitch;
@@ -85,12 +85,12 @@ static void	calc_projection(t_ray *r, t_player *p)
 	else
 		r->wall_x = p->x + r->perp_dist * r->dir_x;
 	r->wall_x -= floor(r->wall_x);
-	r->tex_x = (int)(r->wall_x * (double)g_game->tex[r->tex_num]->width);
+	r->tex_x = (int)(r->wall_x * (double)game->tex[r->tex_num]->width);
 	if ((r->side == 0 && r->dir_x > 0) || (r->side == 1 && r->dir_y < 0))
-		r->tex_x = g_game->tex[r->tex_num]->width - r->tex_x - 1;
+		r->tex_x = game->tex[r->tex_num]->width - r->tex_x - 1;
 }
 
-static void	draw_column(t_ray *r, int x, t_player *p)
+static void	draw_column(t_game *game, t_ray *r, int x, t_player *p)
 {
 	mlx_texture_t	*t;
 	double			d[2];
@@ -98,7 +98,7 @@ static void	draw_column(t_ray *r, int x, t_player *p)
 	int				y;
 	int				i;
 
-	t = g_game->tex[r->tex_num];
+	t = game->tex[r->tex_num];
 	d[0] = 1.0 * t->height / r->line_h;
 	d[1] = (r->draw_start - p->pitch - HEIGHT / 2.0 + r->line_h / 2.0) * d[0];
 	y = r->draw_start;
@@ -113,7 +113,7 @@ static void	draw_column(t_ray *r, int x, t_player *p)
 			c = ((t->pixels[i] / 2) << 24) | ((t->pixels[i + 1] / 2) << 16);
 			c |= ((t->pixels[i + 2] / 2) << 8) | t->pixels[i + 3];
 		}
-		mlx_put_pixel(g_game->frame, x, y, c);
+		mlx_put_pixel(game->frame, x, y, c);
 		y++;
 	}
 }
@@ -123,19 +123,20 @@ void	game_loop(void *param)
 	t_ray		r;
 	t_player	*p;
 	int			x;
+	t_game *game;
 
-	(void)param;
-	handle_movement();
-	p = &g_game->player;
-	draw_background();
+	game = (t_game *)param;
+	handle_movement(game);
+	p = &game->player;
+	draw_background(game);
 	x = 0;
 	while (x < WIDTH)
 	{
 		init_ray(&r, p, x);
-		perform_dda(&r);
-		calc_projection(&r, p);
-		draw_column(&r, x, p);
+		perform_dda(game, &r);
+		calc_projection(game, &r, p);
+		draw_column(game, &r, x, p);
 		x++;
 	}
-	draw_minimap();
+	draw_minimap(game);
 }

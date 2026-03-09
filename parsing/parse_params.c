@@ -29,22 +29,22 @@ int	is_param(char *line)
 	return (0);
 }
 
-void	parse_param(char *line)
+void	parse_param(t_game *game, char *line)
 {
 	if (!ft_strncmp(line, "NO", 2) && is_space(line[2]))
-		parse_texture(&g_game->config.no, line + 2);
+		parse_texture(game, &game->config.no, line + 2);
 	else if (!ft_strncmp(line, "SO", 2) && is_space(line[2]))
-		parse_texture(&g_game->config.so, line + 2);
+		parse_texture(game, &game->config.so, line + 2);
 	else if (!ft_strncmp(line, "WE", 2) && is_space(line[2]))
-		parse_texture(&g_game->config.we, line + 2);
+		parse_texture(game, &game->config.we, line + 2);
 	else if (!ft_strncmp(line, "EA", 2) && is_space(line[2]))
-		parse_texture(&g_game->config.ea, line + 2);
+		parse_texture(game, &game->config.ea, line + 2);
 	else if (!ft_strncmp(line, "F", 1) && is_space(line[1]))
-		parse_color(g_game->config.floor_color, line + 1, 1);
+		parse_color(game, game->config.floor_color, line + 1, 1);
 	else if (!ft_strncmp(line, "C", 1) && is_space(line[1]))
-		parse_color(g_game->config.ceil_color, line + 1, 2);
+		parse_color(game, game->config.ceil_color, line + 1, 2);
 	else
-		error_exit("Unknown parameter");
+		error_exit(game, "Unknown parameter");
 }
 
 int	all_params_set(t_config *cfg)

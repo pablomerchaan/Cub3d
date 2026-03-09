@@ -29,25 +29,25 @@ static int	is_map_line(char *line)
 	return (1);
 }
 
-static void	handle_line(char *clean, int *started)
+static void	handle_line(t_game *game, char *clean, int *started)
 {
 	if (!*started && is_empty(clean))
 		free(clean);
 	else if (!*started && is_param(clean))
 	{
-		parse_param(clean);
+		parse_param(game, clean);
 		free(clean);
 	}
 	else
 	{
 		if (!is_map_line(clean))
-			error_exit("Invalid line in map");
+			error_exit(game, "Invalid line in map");
 		*started = 1;
-		append_map_line(&g_game->map, clean);
+		append_map_line(game, &game->map, clean);
 	}
 }
 
-static void	parse_lines(int fd)
+static void	parse_lines(t_game *game, int fd)
 {
 	char	*line;
 	int		started;
@@ -59,28 +59,28 @@ static void	parse_lines(int fd)
 	{
 		clean = ft_strtrim(line, "\n");
 		free(line);
-		handle_line(clean, &started);
+		handle_line(game, clean, &started);
 		line = get_next_line(fd);
 	}
 }
 
-static void	finalize_parse(void)
+static void	finalize_parse(t_game *game)
 {
-	if (!all_params_set(&g_game->config))
-		error_exit("Missing parameters");
-	make_map_rectangular(&g_game->map);
-	parse_player(&g_game->map, &g_game->player);
-	validate_map(&g_game->map);
+	if (!all_params_set(&game->config))
+		error_exit(game, "Missing parameters");
+	make_map_rectangular(&game->map);
+	parse_player(game, &game->map, &game->player);
+	validate_map(game, &game->map);
 }
 
-void	parse_cub(char *file)
+void	parse_cub(t_game *game, char *file)
 {
 	int	fd;
 
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
-		error_exit("Cannot open .cub file");
-	parse_lines(fd);
+		error_exit(game, "Cannot open .cub file");
+	parse_lines(game, fd);
 	close(fd);
-	finalize_parse();
+	finalize_parse(game);
 }

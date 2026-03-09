@@ -96,15 +96,13 @@ typedef struct s_game
 	int				shoot_counter;
 }	t_game;
 
-extern t_game	*g_game;
-
-void	parse_cub(char *file);
-void	error_exit(char *msg);
-void	free_game(void);
-void	init_game(void);
+void	parse_cub(t_game *game, char *file);
+void	error_exit(t_game *game, char *msg);
+void	free_game(t_game *game);
+void	init_game(t_game *game);
 void	game_loop(void *param);
-void	draw_minimap(void);
-void	handle_movement(void);
-void	draw_background(void);
+void	draw_minimap(t_game *game);
+void	handle_movement(t_game *game);
+void	draw_background(t_game *game);
 
 #endif

@@ -35,58 +35,58 @@ static void	move_axis(t_player *p, char **grid, double dir_x, double dir_y)
 		p->y += dir_y * MOVE_SPEED;
 }
 
-static void	handle_translation(t_player *p, char **grid)
+static void	handle_translation(t_game *game, t_player *p, char **grid)
 {
-	if (mlx_is_key_down(g_game->mlx, MLX_KEY_W))
+	if (mlx_is_key_down(game->mlx, MLX_KEY_W))
 		move_axis(p, grid, p->dir_x, p->dir_y);
-	if (mlx_is_key_down(g_game->mlx, MLX_KEY_S))
+	if (mlx_is_key_down(game->mlx, MLX_KEY_S))
 		move_axis(p, grid, -p->dir_x, -p->dir_y);
-	if (mlx_is_key_down(g_game->mlx, MLX_KEY_D))
+	if (mlx_is_key_down(game->mlx, MLX_KEY_D))
 		move_axis(p, grid, -p->dir_y, p->dir_x);
-	if (mlx_is_key_down(g_game->mlx, MLX_KEY_A))
+	if (mlx_is_key_down(game->mlx, MLX_KEY_A))
 		move_axis(p, grid, p->dir_y, -p->dir_x);
 }
 
-static void	handle_actions(t_player *p)
+static void	handle_actions(t_game *game, t_player *p)
 {
-	if (mlx_is_key_down(g_game->mlx, MLX_KEY_UP))
+	if (mlx_is_key_down(game->mlx, MLX_KEY_UP))
 		p->pitch += 15;
-	if (mlx_is_key_down(g_game->mlx, MLX_KEY_DOWN))
+	if (mlx_is_key_down(game->mlx, MLX_KEY_DOWN))
 		p->pitch -= 15;
 	if (p->pitch > 300)
 		p->pitch = 300;
 	if (p->pitch < -300)
 		p->pitch = -300;
-	if (mlx_is_key_down(g_game->mlx, MLX_KEY_SPACE)
-		|| mlx_is_mouse_down(g_game->mlx, MLX_MOUSE_BUTTON_LEFT)
-		|| mlx_is_mouse_down(g_game->mlx, MLX_MOUSE_BUTTON_RIGHT))
-		if (g_game->shoot_counter == 0)
-			g_game->shoot_counter = 5;
-	if (g_game->shoot_counter > 0)
+	if (mlx_is_key_down(game->mlx, MLX_KEY_SPACE)
+		|| mlx_is_mouse_down(game->mlx, MLX_MOUSE_BUTTON_LEFT)
+		|| mlx_is_mouse_down(game->mlx, MLX_MOUSE_BUTTON_RIGHT))
+		if (game->shoot_counter == 0)
+			game->shoot_counter = 5;
+	if (game->shoot_counter > 0)
 	{
-		g_game->gun_idle->instances[0].enabled = false;
-		g_game->gun_fire->instances[0].enabled = true;
-		g_game->shoot_counter--;
+		game->gun_idle->instances[0].enabled = false;
+		game->gun_fire->instances[0].enabled = true;
+		game->shoot_counter--;
 	}
 	else
 	{
-		g_game->gun_idle->instances[0].enabled = true;
-		g_game->gun_fire->instances[0].enabled = false;
+		game->gun_idle->instances[0].enabled = true;
+		game->gun_fire->instances[0].enabled = false;
 	}
 }
 
-void	handle_movement(void)
+void	handle_movement(t_game *game)
 {
 	t_player	*p;
 	int			x;
 	int			y;
 
-	p = &g_game->player;
-	if (mlx_is_key_down(g_game->mlx, MLX_KEY_RIGHT))
+	p = &game->player;
+	if (mlx_is_key_down(game->mlx, MLX_KEY_RIGHT))
 		rotate_player(p, 1);
-	if (mlx_is_key_down(g_game->mlx, MLX_KEY_LEFT))
+	if (mlx_is_key_down(game->mlx, MLX_KEY_LEFT))
 		rotate_player(p, -1);
-	mlx_get_mouse_pos(g_game->mlx, &x, &y);
+	mlx_get_mouse_pos(game->mlx, &x, &y);
 	if (x != WIDTH / 2 || y != HEIGHT / 2)
 	{
 		rotate_player(p, ((x - (WIDTH / 2)) * 0.003) / ROT_SPEED);
@@ -95,10 +95,10 @@ void	handle_movement(void)
 			p->pitch = 300;
 		if (p->pitch < -300)
 			p->pitch = -300;
-		mlx_set_mouse_pos(g_game->mlx, WIDTH / 2, HEIGHT / 2);
+		mlx_set_mouse_pos(game->mlx, WIDTH / 2, HEIGHT / 2);
 	}
-	handle_translation(p, g_game->map.grid);
-	handle_actions(p);
-	if (mlx_is_key_down(g_game->mlx, MLX_KEY_ESCAPE))
-		mlx_close_window(g_game->mlx);
+	handle_translation(game, p, game->map.grid);
+	handle_actions(game, p);
+	if (mlx_is_key_down(game->mlx, MLX_KEY_ESCAPE))
+		mlx_close_window(game->mlx);
 }
