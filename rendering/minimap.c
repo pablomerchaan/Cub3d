@@ -13,7 +13,7 @@
 #include "../cub3d.h"
 
 // Dibuja un cuadrado protegiendo los límites de la pantalla (Evita Segfaults)
-static void	draw_square(t_game *game, int x, int y, uint32_t color, int size)
+static void	draw_square(t_game *game, t_pair pair, uint32_t color, int size)
 {
 	int	i;
 	int	j;
@@ -24,8 +24,9 @@ static void	draw_square(t_game *game, int x, int y, uint32_t color, int size)
 		j = 0;
 		while (j < size)
 		{
-			if (x + j >= 0 && x + j < WIDTH && y + i >= 0 && y + i < HEIGHT)
-				mlx_put_pixel(game->frame, x + j, y + i, color);
+			if (pair.x + j >= 0 && pair.x + j < WIDTH && pair.y + i >= 0
+				&& pair.y + i < HEIGHT)
+				mlx_put_pixel(game->frame, pair.x + j, pair.y + i, color);
 			j++;
 		}
 		i++;
@@ -33,11 +34,12 @@ static void	draw_square(t_game *game, int x, int y, uint32_t color, int size)
 }
 
 // Escanea la matriz y dibuja el mapa y al jugador
-void	draw_minimap(t_game *game)
+/*void	draw_minimap(t_game *game)
 {
-	int	y;
-	int	x;
-	int	p_size;
+	int		y;
+	int		x;
+	int		p_size;
+	t_pair	pair;
 
 	y = 0;
 	while (y < game->map.height)
@@ -45,18 +47,55 @@ void	draw_minimap(t_game *game)
 		x = 0;
 		while (x < game->map.width)
 		{
+			pair.x = x * MM_SCALE;
+			pair.y = y * MM_SCALE;
 			if (game->map.grid[y][x] == '1')
-				draw_square(game, x * MM_SCALE, y * MM_SCALE, MM_WALL, MM_SCALE);
+				draw_square(game, pair, MM_WALL, MM_SCALE);
 			else if (game->map.grid[y][x] != ' '
 				&& game->map.grid[y][x] != '\0')
-				draw_square(game, x * MM_SCALE, y * MM_SCALE, MM_FLOOR, MM_SCALE);
+				draw_square(game, pair, MM_FLOOR, MM_SCALE);
 			x++;
 		}
 		y++;
 	}
 	p_size = MM_SCALE / 2;
-	draw_square(game, (int)(game->player.x * MM_SCALE) - (p_size / 2),
-		(int)(game->player.y * MM_SCALE) - (p_size / 2), MM_PLAYER, p_size);
+	pair.x = (int)(game->player.x * MM_SCALE) - (p_size / 2);
+	pair.y = (int)(game->player.y * MM_SCALE) - (p_size / 2);
+	draw_square(game, pair, MM_PLAYER, p_size);
+}*/
+static void	draw_map_grid(t_game *game)
+{
+	int		y;
+	int		x;
+	t_pair	pair;
+
+	y = -1;
+	while (++y < game->map.height)
+	{
+		x = -1;
+		while (++x < game->map.width)
+		{
+			pair.x = x * MM_SCALE;
+			pair.y = y * MM_SCALE;
+			if (game->map.grid[y][x] == '1')
+				draw_square(game, pair, MM_WALL, MM_SCALE);
+			else if (game->map.grid[y][x] != ' '
+				&& game->map.grid[y][x] != '\0')
+				draw_square(game, pair, MM_FLOOR, MM_SCALE);
+		}
+	}
+}
+
+void	draw_minimap(t_game *game)
+{
+	int		p_size;
+	t_pair	pair;
+
+	draw_map_grid(game);
+	p_size = MM_SCALE / 2;
+	pair.x = (int)(game->player.x * MM_SCALE) - (p_size / 2);
+	pair.y = (int)(game->player.y * MM_SCALE) - (p_size / 2);
+	draw_square(game, pair, MM_PLAYER, p_size);
 }
 
 void	draw_background(t_game *game)

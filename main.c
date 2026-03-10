@@ -44,7 +44,8 @@ static void	init_struct(t_game *game)
 
 int	main(int argc, char **argv)
 {
-	t_game *game;
+	t_game	*game;
+
 	if (argc != 2)
 	{
 		printf("Error\nUsage: %s <map.cub>\n", argv[0]);

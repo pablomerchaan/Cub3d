@@ -31,6 +31,12 @@
 # define MM_FLOOR 0x00000088
 # define MM_PLAYER 0xFF0000FF
 
+typedef struct s_pair
+{
+	int	x;
+	int	y;
+}	t_pair;
+
 typedef struct s_player
 {
 	double	x;

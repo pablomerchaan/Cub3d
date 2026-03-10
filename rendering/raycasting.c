@@ -123,7 +123,7 @@ void	game_loop(void *param)
 	t_ray		r;
 	t_player	*p;
 	int			x;
-	t_game *game;
+	t_game		*game;
 
 	game = (t_game *)param;
 	handle_movement(game);
