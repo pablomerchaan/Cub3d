@@ -70,5 +70,6 @@ void	init_game(t_game *game)
 	if (mlx_image_to_window(game->mlx, game->frame, 0, 0) < 0)
 		error_exit(game, "Window connection failed");
 	load_textures(game);
+	game->mouse_toggle = 0;
 	init_weapon(game);
 }

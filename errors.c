@@ -26,5 +26,6 @@ void	error_exit(t_game *game, char *msg)
 {
 	put_error(msg);
 	free_game(game);
+	free(game);
 	exit(EXIT_FAILURE);
 }

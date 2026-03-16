@@ -100,6 +100,7 @@ typedef struct s_game
 	mlx_image_t		*gun_idle;
 	mlx_image_t		*gun_fire;
 	int				shoot_counter;
+	int				mouse_toggle;
 }	t_game;
 
 void	parse_cub(t_game *game, char *file);

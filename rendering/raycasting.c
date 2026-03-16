@@ -139,4 +139,5 @@ void	game_loop(void *param)
 		x++;
 	}
 	draw_minimap(game);
+	usleep(1000);
 }

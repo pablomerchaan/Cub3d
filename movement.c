@@ -75,28 +75,45 @@ static void	handle_actions(t_game *game, t_player *p)
 	}
 }
 
+static void handle_mouse_rot(t_game *game, t_player *p)
+{
+	static int m_key_lock = 0;
+	int	x;
+	int	y;
+
+	if (mlx_is_key_down(game->mlx, MLX_KEY_M) && !m_key_lock)
+	{
+		game->mouse_toggle = !game->mouse_toggle;
+		m_key_lock = 1;
+		if (game->mouse_toggle)
+			mlx_set_cursor_mode(game->mlx, MLX_MOUSE_HIDDEN);
+		else
+			mlx_set_cursor_mode(game->mlx, MLX_MOUSE_NORMAL);
+	}
+	else if (!mlx_is_key_down(game->mlx, MLX_KEY_M))
+		m_key_lock = 0;
+	if (game->mouse_toggle)
+	{
+		mlx_get_mouse_pos(game->mlx, &x, &y);
+		if (x != WIDTH / 2 || y != HEIGHT / 2)
+		{
+			rotate_player(p, ((x - (WIDTH / 2)) * 0.003) / ROT_SPEED);
+			p->pitch -= (y - (HEIGHT / 2));
+			mlx_set_mouse_pos(game->mlx, WIDTH / 2, HEIGHT / 2);
+		}
+	}
+}
+
 void	handle_movement(t_game *game)
 {
 	t_player	*p;
-	int			x;
-	int			y;
 
 	p = &game->player;
 	if (mlx_is_key_down(game->mlx, MLX_KEY_RIGHT))
 		rotate_player(p, 1);
 	if (mlx_is_key_down(game->mlx, MLX_KEY_LEFT))
 		rotate_player(p, -1);
-	mlx_get_mouse_pos(game->mlx, &x, &y);
-	if (x != WIDTH / 2 || y != HEIGHT / 2)
-	{
-		rotate_player(p, ((x - (WIDTH / 2)) * 0.003) / ROT_SPEED);
-		p->pitch -= y - (HEIGHT / 2);
-		if (p->pitch > 300)
-			p->pitch = 300;
-		if (p->pitch < -300)
-			p->pitch = -300;
-		mlx_set_mouse_pos(game->mlx, WIDTH / 2, HEIGHT / 2);
-	}
+	handle_mouse_rot(game, p);
 	handle_translation(game, p, game->map.grid);
 	handle_actions(game, p);
 	if (mlx_is_key_down(game->mlx, MLX_KEY_ESCAPE))
