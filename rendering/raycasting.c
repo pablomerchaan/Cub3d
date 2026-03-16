@@ -19,8 +19,8 @@ static void	init_ray(t_ray *r, t_player *p, int x)
 	r->dir_y = p->dir_y + p->plane_y * r->cam_x;
 	r->map_x = (int)p->x;
 	r->map_y = (int)p->y;
-	r->delta_x = fabs(1 / r->dir_x);
-	r->delta_y = fabs(1 / r->dir_y);
+	r->delta_x = (r->dir_x == 0) ? 1e30 : fabs(1 / r->dir_x);
+	r->delta_y = (r->dir_y == 0) ? 1e30 : fabs(1 / r->dir_y);
 	r->hit = 0;
 	r->step_x = 1;
 	r->side_x = (r->map_x + 1.0 - p->x) * r->delta_x;
@@ -65,6 +65,8 @@ static void	perform_dda(t_game *game, t_ray *r)
 
 static void	calc_projection(t_game *game, t_ray *r, t_player *p)
 {
+	if (r->perp_dist < 0.0001)
+		r->perp_dist = 0.0001;
 	r->line_h = (int)(HEIGHT / r->perp_dist);
 	r->draw_start = -r->line_h / 2 + HEIGHT / 2 + p->pitch;
 	if (r->draw_start < 0)
@@ -86,7 +88,7 @@ static void	calc_projection(t_game *game, t_ray *r, t_player *p)
 		r->wall_x = p->x + r->perp_dist * r->dir_x;
 	r->wall_x -= floor(r->wall_x);
 	r->tex_x = (int)(r->wall_x * (double)game->tex[r->tex_num]->width);
-	if ((r->side == 0 && r->dir_x > 0) || (r->side == 1 && r->dir_y < 0))
+	if ((r->side == 0 && r->dir_x < 0) || (r->side == 1 && r->dir_y > 0))
 		r->tex_x = game->tex[r->tex_num]->width - r->tex_x - 1;
 }
 
@@ -139,5 +141,4 @@ void	game_loop(void *param)
 		x++;
 	}
 	draw_minimap(game);
-	usleep(1000);
 }
