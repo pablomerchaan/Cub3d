@@ -12,21 +12,6 @@
 
 #include "cub3d.h"
 
-void	rotate_player(t_player *p, double rot_dir)
-{
-	double	old_dir;
-	double	old_plane;
-	double	rot;
-
-	old_dir = p->dir_x;
-	old_plane = p->plane_x;
-	rot = ROT_SPEED * rot_dir;
-	p->dir_x = p->dir_x * cos(rot) - p->dir_y * sin(rot);
-	p->dir_y = old_dir * sin(rot) + p->dir_y * cos(rot);
-	p->plane_x = p->plane_x * cos(rot) - p->plane_y * sin(rot);
-	p->plane_y = old_plane * sin(rot) + p->plane_y * cos(rot);
-}
-
 static void	move_axis(t_player *p, char **grid, double dir_x, double dir_y)
 {
 	if (grid[(int)p->y][(int)(p->x + dir_x * MOVE_SPEED)] != '1')
@@ -75,11 +60,11 @@ static void	handle_actions(t_game *game, t_player *p)
 	}
 }
 
-static void handle_mouse_rot(t_game *game, t_player *p)
+static void	handle_mouse_rot(t_game *game, t_player *p)
 {
-	static int m_key_lock = 0;
-	int	x;
-	int	y;
+	int			x;
+	int			y;
+	static int	m_key_lock = 0;
 
 	if (mlx_is_key_down(game->mlx, MLX_KEY_M) && !m_key_lock)
 	{

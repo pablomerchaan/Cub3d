@@ -12,32 +12,6 @@
 
 #include "../cub3d.h"
 
-static void	init_ray(t_ray *r, t_player *p, int x)
-{
-	r->cam_x = 2 * x / (double)WIDTH - 1;
-	r->dir_x = p->dir_x + p->plane_x * r->cam_x;
-	r->dir_y = p->dir_y + p->plane_y * r->cam_x;
-	r->map_x = (int)p->x;
-	r->map_y = (int)p->y;
-	r->delta_x = (r->dir_x == 0) ? 1e30 : fabs(1 / r->dir_x);
-	r->delta_y = (r->dir_y == 0) ? 1e30 : fabs(1 / r->dir_y);
-	r->hit = 0;
-	r->step_x = 1;
-	r->side_x = (r->map_x + 1.0 - p->x) * r->delta_x;
-	if (r->dir_x < 0)
-	{
-		r->step_x = -1;
-		r->side_x = (p->x - r->map_x) * r->delta_x;
-	}
-	r->step_y = 1;
-	r->side_y = (r->map_y + 1.0 - p->y) * r->delta_y;
-	if (r->dir_y < 0)
-	{
-		r->step_y = -1;
-		r->side_y = (p->y - r->map_y) * r->delta_y;
-	}
-}
-
 static void	perform_dda(t_game *game, t_ray *r)
 {
 	while (r->hit == 0)

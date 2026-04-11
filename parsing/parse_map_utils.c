@@ -50,28 +50,13 @@ char	*pad_with_spaces(char *line, int length)
 	free(line);
 	return (new_line);
 }
-/*
-static void	set_dir_plane(t_player *player, char dir)
-{
-	if (dir == 'N')
-	{
-		player->dir_y = -1.0;
-		player->plane_x = 0.66;
-	}
-	else if (dir == 'S')
-	{
-		player->dir_y = 1.0;
-		player->plane_x = -0.66;
-	}
-}
-*/
+
 void	init_player_direction(t_player *player, char dir)
 {
 	player->dir_x = 0.0;
 	player->dir_y = 0.0;
 	player->plane_x = 0.0;
 	player->plane_y = 0.0;
-	//set_dir_plane(player, dir);
 	if (dir == 'N')
 	{
 		player->dir_y = -1.0;

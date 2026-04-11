@@ -17,7 +17,8 @@ SRC = main.c errors.c free_game.c init_game.c movement.c \
       parsing/parse_map.c parsing/parse_map_utils.c \
       parsing/map_validation.c parsing/utils.c \
 	  rendering/minimap.c rendering/raycasting.c \
-      getnextline/get_next_line.c \
+      rendering/init_ray.c movements_aux.c\
+	  getnextline/get_next_line.c \
 	  getnextline/get_next_line_utils.c
 
 OBJ = $(SRC:.c=.o)

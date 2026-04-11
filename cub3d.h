@@ -111,5 +111,7 @@ void	game_loop(void *param);
 void	draw_minimap(t_game *game);
 void	handle_movement(t_game *game);
 void	draw_background(t_game *game);
+void	init_ray(t_ray *r, t_player *p, int x);
+void	rotate_player(t_player *p, double rot_dir);
 
 #endif
