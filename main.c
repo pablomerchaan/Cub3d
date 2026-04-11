@@ -62,8 +62,6 @@ int	main(int argc, char **argv)
 	init_struct(game);
 	parse_cub(game, argv[1]);
 	init_game(game);
-	printf("Estos son los datos de player: %f, %f, %f, %f\n", game->player.dir_x,
-			game->player.dir_y, game->player.plane_x, game->player.plane_y);
 	mlx_loop_hook(game->mlx, game_loop, game);
 	mlx_loop(game->mlx);
 	mlx_terminate(game->mlx);
